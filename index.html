@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Karakter 3D Saya</title>
+
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.159.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.159.0/examples/js/controls/OrbitControls.js"></script>
+
+  <style>
+    body { margin: 0; background-color: #0f0f0f; }
+    canvas { display: block; }
+  </style>
+</head>
+
+<body>
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Pencahayaan lembut
+    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
+    scene.add(light);
+
+    // Kontrol kamera
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    // Load model 3D
+    const loader = new THREE.GLTFLoader();
+    loader.load(
+      'https://github.com/Zyrxe/Y/raw/c8a50e5ed548606fbdebb8f5cdd691bd1cea2e7a/A_realistic_3D_female_0929011418_texture.glb',
+      function (gltf) {
+        const model = gltf.scene;
+        model.position.y = -1;
+        scene.add(model);
+      },
+      undefined,
+      function (error) {
+        console.error('Terjadi error saat load model:', error);
+      }
+    );
+
+    camera.position.z = 2;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Responsif
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
